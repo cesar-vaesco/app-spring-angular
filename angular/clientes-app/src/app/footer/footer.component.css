@@ -1,10 +1,9 @@
-/*.footer {
+.footer {
     position: absolute;
-    bottom: 0px;
-    height: 60px;
+    bottom: 0;
     width: 100%;
+    height: 60px;
 }
-*/
 
 
 /* Para dejar el footer hasta el fonde de la hoja */
