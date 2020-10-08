@@ -6,6 +6,7 @@ import {HttpClient, HttpHeaders } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -34,5 +35,9 @@ private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'})
 
   update(cliente: Cliente): Observable<Cliente>{
     return this.http.put<Cliente>(`${this.urlEndPoint}/${cliente.id}`, cliente, {headers:this.httpHeaders})
+  }
+
+  delete(id:number):Observable<Cliente>{
+    return this.http.delete<Cliente>(`${this.urlEndPoint}/${id}`, {headers:this.httpHeaders})
   }
 }
