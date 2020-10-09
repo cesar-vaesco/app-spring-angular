@@ -28,26 +28,49 @@ private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'})
      map(response => response as Cliente[])
    );
   }
+
+  /*Mantienen al usuario en la misma ventana*/ 
   create(cliente: Cliente): Observable<Cliente>{
-    return this.http.post<Cliente>(this.urlEndPoint, cliente, {headers: this.httpHeaders});
+    return this.http.post<Cliente>(this.urlEndPoint, cliente, {headers: this.httpHeaders}).pipe(
+      catchError(e => {
+        console.error(e.error.mensaje);
+        swal.fire('Error al crear el cliente', e.error.mensaje,'error');
+        return throwError(e);   
+      })
+    )
   }
 
+  /*Redirige el error a la url de /clientes*/ 
   getCliente(id): Observable<Cliente>{
     return this.http.get<Cliente>(`${this.urlEndPoint}/${id}`).pipe(
       catchError( e => {
         this.router.navigate(['/clientes']);
         console.error(e.error.mensaje);
-            swal.fire('Error al editar', e.error.mensaje,'error');
+            swal.fire('Error al editar...', e.error.mensaje,'error');
             return throwError(e);
       })
     );
   }
-
+/*Mantienen al usuario en la misma ventana*/ 
   update(cliente: Cliente): Observable<Cliente>{
-    return this.http.put<Cliente>(`${this.urlEndPoint}/${cliente.id}`, cliente, {headers:this.httpHeaders})
+    return this.http.put<Cliente>(`${this.urlEndPoint}/${cliente.id}`, cliente, {headers:this.httpHeaders}).pipe(
+      catchError(e=>{
+        console.error(e.error.mensaje);
+        swal.fire('Error al editar al cliente', e.error.mensaje,'error');
+        return throwError(e);   
+      })
+    );
   }
 
   delete(id:number):Observable<Cliente>{
-    return this.http.delete<Cliente>(`${this.urlEndPoint}/${id}`, {headers:this.httpHeaders})
+    return this.http.delete<Cliente>(`${this.urlEndPoint}/${id}`, {headers:this.httpHeaders}).pipe(
+      catchError(e=>{
+        console.error(e.error.mensaje);
+        swal.fire('Error al eliminar al cliente', e.error.mensaje,'error');
+        return throwError(e);   
+      })
+    );
   }
+
+  /** Cierre de la clase */
 }
