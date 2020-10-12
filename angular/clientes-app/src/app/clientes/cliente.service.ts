@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { DatePipe, formatDate, registerLocaleData} from '@angular/common';
-import localEs from '@angular/common/locales/es-MX';
+import { DatePipe, formatDate} from '@angular/common';
+
 import { CLIENTES } from './clientes.json';
 import { Cliente } from './cliente';
 import { of, Observable, throwError }from 'rxjs';
@@ -36,7 +36,7 @@ private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'})
         cliente.apellido = cliente.apellido.toUpperCase();
         cliente.email = cliente.email.toUpperCase();
 
-        registerLocaleData(localEs, 'es');
+        
 
         let datePipe = new DatePipe('es-MX'); 
         cliente.createAt = datePipe.transform (cliente.createAt, 'EEEE dd, MMMM yyyy');
