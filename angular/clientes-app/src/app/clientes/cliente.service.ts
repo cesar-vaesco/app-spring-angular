@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { formatDate} from '@angular/common';
 import { CLIENTES } from './clientes.json';
 import { Cliente } from './cliente';
 import { of, Observable, throwError }from 'rxjs';
@@ -33,6 +34,11 @@ private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'})
         cliente.nombre = cliente.nombre.toUpperCase();
         cliente.apellido = cliente.apellido.toUpperCase();
         cliente.email = cliente.email.toUpperCase();
+
+         
+       cliente.createAt = formatDate(cliente.createAt, 'dd-MM-yyyy', 'en-US');
+        
+
         return cliente;
       });
     }
