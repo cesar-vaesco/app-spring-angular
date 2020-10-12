@@ -25,7 +25,18 @@ private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'})
    //return of(CLIENTES);
    //return this.http.get<Cliente[]>(this.urlEndPoint);
    return this.http.get(this.urlEndPoint).pipe(
-     map(response => response as Cliente[])
+     map(response => {
+       
+      let clientes = response as Cliente[];
+
+      return clientes.map(cliente  => {
+        cliente.nombre = cliente.nombre.toUpperCase();
+        cliente.apellido = cliente.apellido.toUpperCase();
+        cliente.email = cliente.email.toUpperCase();
+        return cliente;
+      });
+    }
+    )
    );
   }
 
@@ -54,7 +65,7 @@ private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'})
         if(e.status == 400){
           return throwError(e); 
         }
-        
+
         this.router.navigate(['/clientes']);
         console.error(e.error.mensaje);
             swal.fire('Error al editar...', e.error.mensaje,'error');
