@@ -12,6 +12,8 @@ export class FormComponent implements OnInit {
   public cliente: Cliente = new Cliente();
   public titulo: string = 'Crear cliente';
 
+  private errores: string[];
+
   constructor(
     private clienteService: ClienteService,
     private router: Router,
@@ -43,7 +45,14 @@ export class FormComponent implements OnInit {
         `Cliente ${nombre} ${apellido} creado con éxito!`,
         'success'
       );
-    });
+    },
+      err => {
+        this.errores = err.error.errors as string[];
+        /*Opcional*/
+        console.error("Código de error desde el backend: " + err.status);
+        console.error(err.error.errors);
+      }
+    );
   }
 
   update():void{
@@ -57,6 +66,12 @@ export class FormComponent implements OnInit {
         `Cliente ${nombre} ${apellido} actualizado con éxito!`,
         'success'
       );
+    },
+    err => {
+      this.errores = err.error.errors as string[];
+      /*Opcional*/
+      console.error("Código de error desde el backend: " + err.status);
+      console.error(err.error.errors);
     })
   }
 

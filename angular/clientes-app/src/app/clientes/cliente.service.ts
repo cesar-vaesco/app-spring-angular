@@ -33,6 +33,12 @@ private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'})
   create(cliente: Cliente): Observable<Cliente>{
     return this.http.post<Cliente>(this.urlEndPoint, cliente, {headers: this.httpHeaders}).pipe(
       catchError(e => {
+
+        /*La lectura del error la toma de la respuesta -- formato json*/ 
+        if(e.status == 400){
+          return throwError(e); 
+        }
+
         console.error(e.error.mensaje);
         swal.fire('Error al crear el cliente', e.error.mensaje,'error');
         return throwError(e);   
@@ -44,6 +50,11 @@ private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'})
   getCliente(id): Observable<Cliente>{
     return this.http.get<Cliente>(`${this.urlEndPoint}/${id}`).pipe(
       catchError( e => {
+
+        if(e.status == 400){
+          return throwError(e); 
+        }
+        
         this.router.navigate(['/clientes']);
         console.error(e.error.mensaje);
             swal.fire('Error al editar...', e.error.mensaje,'error');
