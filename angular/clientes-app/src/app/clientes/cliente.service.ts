@@ -33,13 +33,13 @@ private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'})
 
       return clientes.map(cliente  => {
         cliente.nombre = cliente.nombre.toUpperCase();
-        cliente.apellido = cliente.apellido.toUpperCase();
+        //cliente.apellido = cliente.apellido.toUpperCase();
         cliente.email = cliente.email.toUpperCase();
 
         
 
         let datePipe = new DatePipe('es-MX'); 
-        cliente.createAt = datePipe.transform (cliente.createAt, 'EEEE dd, MMMM yyyy');
+        //cliente.createAt = datePipe.transform (cliente.createAt, 'EEEE dd, MMMM yyyy');
       // cliente.createAt = formatDate(cliente.createAt, 'dd-MM-yyyy', 'en-US');
         
 
