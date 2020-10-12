@@ -73,6 +73,11 @@ public class ClienteRestController {
 	 * @Valid valida las anotaciones de validación marcadas en los atributos de el
 	 * Objeto Cliente.Java
 	 */
+	/**
+	 * @param cliente
+	 * @param result
+	 * @return
+	 */
 	@PostMapping("/clientes")
 	public ResponseEntity<?> create(@Valid @RequestBody Cliente cliente, BindingResult result) {
 
@@ -81,17 +86,21 @@ public class ClienteRestController {
 
 		if (result.hasErrors()) {
 
+			
 			/*
 			 * List<String> errors = new ArrayList<>(); for(FieldError err:
 			 * result.getFieldErrors()) { errors.add("El campo '"+err.getField()+"' " +
 			 * err.getDefaultMessage()); }
 			 */
+			 
 
-			List<String> errors = result.getFieldErrors().stream()
+			List<String> errors = result.getFieldErrors()
+					.stream()
 					.map(err -> "El campo '" + err.getField() + "' " + err.getDefaultMessage())
 					.collect(Collectors.toList());
 
 			response.put("errors", errors);
+			log.info("Log: error al validar el registro");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
 
