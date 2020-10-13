@@ -23,38 +23,37 @@ private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'})
 /* Constructor */
   constructor( private http: HttpClient, private router:Router ) { }
 
-  getClientes() : Observable<Cliente[]>{
+  getClientes(page: number) : Observable<any>{
    //return of(CLIENTES);
    //return this.http.get<Cliente[]>(this.urlEndPoint);
-   return this.http.get(this.urlEndPoint).pipe(
+   return this.http.get(this.urlEndPoint +'/page/'+ page).pipe(
 
-    tap(response => {
-      let clientes = response as Cliente[];
+    tap((response:any) => {
+      
       console.log("ClienteService: tap 1");
-      clientes.forEach(cliente =>{
+      (response.content as Cliente[]).forEach(cliente =>{
         console.log(cliente.nombre);
       })
     }),
-     map(response => {
+     map((response:any) => {
        
-      let clientes = response as Cliente[];
 
-      return clientes.map(cliente  => {
+      (response.content as Cliente[]).map(cliente  => {
         cliente.nombre = cliente.nombre.toUpperCase();
         //cliente.apellido = cliente.apellido.toUpperCase();
         cliente.email = cliente.email.toUpperCase();
 
-        let datePipe = new DatePipe('es-MX'); 
+        //let datePipe = new DatePipe('es-MX'); 
         //cliente.createAt = datePipe.transform (cliente.createAt, 'EEEE dd, MMMM yyyy');
       // cliente.createAt = formatDate(cliente.createAt, 'dd-MM-yyyy', 'en-US');
         
         return cliente;
       });
-    }
-    ),
+      return response;
+    }),
     tap(response => {
       console.log('ClienteService: tap 2');
-      response.forEach(cliente =>{
+      (response.content as Cliente[]).forEach(cliente =>{
         console.log(cliente.nombre);
       })
     })
