@@ -40,6 +40,8 @@
                 </tr>
             </tbody>
         </table>
-        <paginator-nav></paginator-nav>
+        <!--*ngIf="paginador" carga primero el componente padre (clientes.component.html)  y se pregunta si existe
+             el componente hijo para poderlo cargar (paginator-nav)-->
+        <paginator-nav *ngIf="paginador" [paginador]="paginador"></paginator-nav>
     </div>
 </div>
