@@ -14,6 +14,9 @@ import { FormsModule } from '@angular/forms';
 import { registerLocaleData } from '@angular/common';
 import localEs from '@angular/common/locales/es-MX';
 import { PaginatorComponent } from './paginator/paginator.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+
 
 registerLocaleData(localEs, 'es');
 
@@ -42,6 +45,8 @@ const routes: Routes = [
     HttpClientModule,
     FormsModule,
     RouterModule.forRoot(routes),
+    BrowserAnimationsModule,
+ 
   ],
   providers: [
     ClienteService,
