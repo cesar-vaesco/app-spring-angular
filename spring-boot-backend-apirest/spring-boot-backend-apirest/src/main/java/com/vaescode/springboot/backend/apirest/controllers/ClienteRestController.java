@@ -1,5 +1,6 @@
 package com.vaescode.springboot.backend.apirest.controllers;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -184,10 +185,26 @@ public class ClienteRestController {
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 
+	
+	/*
+	 * http://localhost:8080/api/clientes/{id}
+	 * */
 	@DeleteMapping("/clientes/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 		Map<String, Object> response = new HashMap<>();
 		try {
+			Cliente cliente = clienteService.findById(id);
+			String nombreFotoAnterior = cliente.getFoto();
+			
+			if(nombreFotoAnterior !=null && nombreFotoAnterior.length()>0) {
+				Path rutaFotoAnterior = Paths.get("C:\\Users\\thece\\Pictures\\imagenes-proyecto").resolve(nombreFotoAnterior).toAbsolutePath();
+				File archivoFotoAnterior = rutaFotoAnterior.toFile();
+				if (archivoFotoAnterior.exists() && archivoFotoAnterior.canRead()) {
+					archivoFotoAnterior.delete();
+				}
+			}
+			
+			
 			clienteService.delete(id);
 		} catch (DataAccessException e) {
 			log.info("Log: error al eliminar el registro");
@@ -210,7 +227,7 @@ public class ClienteRestController {
 		if(!archivo.isEmpty()) {
 			
 			String nombreArchivo = UUID.randomUUID().toString()+ "_" +archivo.getOriginalFilename().replace(" ", "");
-			Path rutaArchivo = Paths.get("C:\\Users\\thece\\Pictures\\Camera Roll").resolve(nombreArchivo).toAbsolutePath();
+			Path rutaArchivo = Paths.get("C:\\Users\\thece\\Pictures\\imagenes-proyecto").resolve(nombreArchivo).toAbsolutePath();
 			
 			try {
 				Files.copy(archivo.getInputStream(), rutaArchivo);
@@ -219,6 +236,16 @@ public class ClienteRestController {
 				response.put("mensaje", "Error al subor la imagen del cliente " + nombreArchivo);
 				response.put("error", e.getMessage().concat(": ").concat(e.getCause().getMessage()));
 				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+			
+			String nombreFotoAnterior = cliente.getFoto();
+			
+			if(nombreFotoAnterior !=null && nombreFotoAnterior.length()>0) {
+				Path rutaFotoAnterior = Paths.get("C:\\Users\\thece\\Pictures\\imagenes-proyecto").resolve(nombreFotoAnterior).toAbsolutePath();
+				File archivoFotoAnterior = rutaFotoAnterior.toFile();
+				if (archivoFotoAnterior.exists() && archivoFotoAnterior.canRead()) {
+					archivoFotoAnterior.delete();
+				}
 			}
 			
 			cliente.setFoto(nombreArchivo);
