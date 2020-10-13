@@ -11,5 +11,5 @@ INSERT INTO clientes (nombre, apellido, email, create_at) VALUES ('Ramona', 'Hig
 INSERT INTO clientes (nombre, apellido, email, create_at) VALUES ('Raúl', 'Sanchéz', 'rul@vaescode.com', '2020-10-07');
 INSERT INTO clientes (nombre, apellido, email, create_at) VALUES ('Cielo', 'Azul', 'ciel@vaescode.com', '2020-10-07');		
 INSERT INTO clientes (nombre, apellido, email, create_at) VALUES ('Josue', 'Ramiréz', 'jos@vaescode.com', '2020-10-07');	
-INSERT INTO clientes (nombre, apellido, email, create_at) VALUES ('Ramón', 'Quezada', 'qeuza@vaescode.com', '2020-08-08'); 
+INSERT INTO clientes (nombre, apellido, email, create_at, foto) VALUES ('Ramón', 'Quezada', 'qeuza@vaescode.com', '2020-08-08', ''); 
 	
