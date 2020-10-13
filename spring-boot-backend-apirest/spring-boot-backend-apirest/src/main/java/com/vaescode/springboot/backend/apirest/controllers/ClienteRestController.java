@@ -232,8 +232,11 @@ public class ClienteRestController {
 		if(!archivo.isEmpty()) {
 			
 			String nombreArchivo = UUID.randomUUID().toString()+ "_" +archivo.getOriginalFilename().replace(" ", "");
+			
 			Path rutaArchivo = Paths.get("C:\\Users\\thece\\Pictures\\imagenes-proyecto").resolve(nombreArchivo).toAbsolutePath();
 			
+			log.info(rutaArchivo.toString());
+
 			try {
 				Files.copy(archivo.getInputStream(), rutaArchivo);
 			} catch (IOException e) {
@@ -280,6 +283,7 @@ public class ClienteRestController {
 	public ResponseEntity<Resource> verFoto(@PathVariable String nombreFoto){
 		
 		Path rutaArchivo = Paths.get("C:\\Users\\thece\\Pictures\\imagenes-proyecto").resolve(nombreFoto).toAbsolutePath();
+		log.info(rutaArchivo.toString());
 		Resource recurso = null;
 		try {
 			recurso = new UrlResource(rutaArchivo.toUri());
