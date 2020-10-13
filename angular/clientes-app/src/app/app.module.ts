@@ -15,19 +15,20 @@ import { registerLocaleData } from '@angular/common';
 import localEs from '@angular/common/locales/es-MX';
 import { PaginatorComponent } from './paginator/paginator.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
-
+import { DetalleComponent } from './clientes/detalle/detalle.component';
 
 registerLocaleData(localEs, 'es');
 
+/* ruta:'vista', mapeando a: componente */
 const routes: Routes = [
   { path: '', redirectTo: '/clientes', pathMatch: 'full' },
   { path: 'directivas', component: DirectivaComponent },
   { path: 'clientes', component: ClientesComponent },
   { path: 'clientes/page/:page', component: ClientesComponent },
   { path: 'clientes/form', component: FormComponent },
-  { path: 'clientes/form/:id', component: FormComponent }  
-  /* ruta:'vista', mapeando a: componente */
+  { path: 'clientes/form/:id', component: FormComponent },
+  { path: 'clientes/ver/:id', component: DetalleComponent }  
+  
 ];
 
 @NgModule({
@@ -39,6 +40,7 @@ const routes: Routes = [
     ClientesComponent,
     FormComponent,
     PaginatorComponent,
+    DetalleComponent,
   ],
   imports: [
     BrowserModule,

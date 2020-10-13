@@ -58,13 +58,12 @@ public class ClienteRestController {
 	public List<Cliente> index() {
 		return clienteService.findAll();
 	}
-	
+
 	@GetMapping("/clientes/page/{page}")
 	public Page<Cliente> index(@PathVariable Integer page) {
-		  Pageable pageable = PageRequest.of(page, 4) ;
+		Pageable pageable = PageRequest.of(page, 4);
 		return clienteService.findAll(pageable);
 	}
-	
 
 	/* http://localhost:8080/api/clientes/{id} */
 	@GetMapping("/clientes/{id}")
@@ -107,16 +106,13 @@ public class ClienteRestController {
 
 		if (result.hasErrors()) {
 
-			
 			/*
 			 * List<String> errors = new ArrayList<>(); for(FieldError err:
 			 * result.getFieldErrors()) { errors.add("El campo '"+err.getField()+"' " +
 			 * err.getDefaultMessage()); }
 			 */
-			 
 
-			List<String> errors = result.getFieldErrors()
-					.stream()
+			List<String> errors = result.getFieldErrors().stream()
 					.map(err -> "El campo '" + err.getField() + "' " + err.getDefaultMessage())
 					.collect(Collectors.toList());
 
@@ -190,26 +186,25 @@ public class ClienteRestController {
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 
-	
 	/*
 	 * http://localhost:8080/api/clientes/{id}
-	 * */
+	 */
 	@DeleteMapping("/clientes/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 		Map<String, Object> response = new HashMap<>();
 		try {
 			Cliente cliente = clienteService.findById(id);
 			String nombreFotoAnterior = cliente.getFoto();
-			
-			if(nombreFotoAnterior !=null && nombreFotoAnterior.length()>0) {
-				Path rutaFotoAnterior = Paths.get("C:\\Users\\thece\\Pictures\\imagenes-proyecto").resolve(nombreFotoAnterior).toAbsolutePath();
+
+			if (nombreFotoAnterior != null && nombreFotoAnterior.length() > 0) {
+				Path rutaFotoAnterior = Paths.get("C:\\Users\\thece\\Pictures\\imagenes-proyecto")
+						.resolve(nombreFotoAnterior).toAbsolutePath();
 				File archivoFotoAnterior = rutaFotoAnterior.toFile();
 				if (archivoFotoAnterior.exists() && archivoFotoAnterior.canRead()) {
 					archivoFotoAnterior.delete();
 				}
 			}
-			
-			
+
 			clienteService.delete(id);
 		} catch (DataAccessException e) {
 			log.info("Log: error al eliminar el registro");
@@ -222,19 +217,20 @@ public class ClienteRestController {
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 	}
-	
+
 	@PostMapping("/clientes/upload")
-	public ResponseEntity<?> upload(@RequestParam("archivo") MultipartFile archivo, @RequestParam("id") Long id ){
+	public ResponseEntity<?> upload(@RequestParam("archivo") MultipartFile archivo, @RequestParam("id") Long id) {
 		Map<String, Object> response = new HashMap<>();
-		
+
 		Cliente cliente = clienteService.findById(id);
-		
-		if(!archivo.isEmpty()) {
-			
-			String nombreArchivo = UUID.randomUUID().toString()+ "_" +archivo.getOriginalFilename().replace(" ", "");
-			
-			Path rutaArchivo = Paths.get("C:\\Users\\thece\\Pictures\\imagenes-proyecto").resolve(nombreArchivo).toAbsolutePath();
-			
+
+		if (!archivo.isEmpty()) {
+
+			String nombreArchivo = UUID.randomUUID().toString() + "_" + archivo.getOriginalFilename().replace(" ", "");
+
+			Path rutaArchivo = Paths.get("C:\\Users\\thece\\Pictures\\imagenes-proyecto").resolve(nombreArchivo)
+					.toAbsolutePath();
+
 			log.info(rutaArchivo.toString());
 
 			try {
@@ -245,44 +241,46 @@ public class ClienteRestController {
 				response.put("error", e.getMessage().concat(": ").concat(e.getCause().getMessage()));
 				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
-			
+
 			String nombreFotoAnterior = cliente.getFoto();
-			
-			if(nombreFotoAnterior !=null && nombreFotoAnterior.length()>0) {
-				Path rutaFotoAnterior = Paths.get("C:\\Users\\thece\\Pictures\\imagenes-proyecto").resolve(nombreFotoAnterior).toAbsolutePath();
+
+			if (nombreFotoAnterior != null && nombreFotoAnterior.length() > 0) {
+				Path rutaFotoAnterior = Paths.get("C:\\Users\\thece\\Pictures\\imagenes-proyecto")
+						.resolve(nombreFotoAnterior).toAbsolutePath();
 				File archivoFotoAnterior = rutaFotoAnterior.toFile();
 				if (archivoFotoAnterior.exists() && archivoFotoAnterior.canRead()) {
 					archivoFotoAnterior.delete();
 				}
 			}
-			
+
 			cliente.setFoto(nombreArchivo);
 
 			clienteService.save(cliente);
 			response.put("cliente", cliente);
 			response.put("mensaje", "Haz subido correctamente la imagen " + nombreArchivo);
-			
+
 		}
-		
+
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
-	
+
 	/*
 	 * POST -> http://localhost:8080/api/clientes/upload
 	 * 
-	 * Al probar en postman se requiere pasar una imagen y el ID del cliente que se va a actualizar
+	 * Al probar en postman se requiere pasar una imagen y el ID del cliente que se
+	 * va a actualizar
 	 * 
-	 *   Postman - body - form-data 
-	 *   						key: archivo  value: dirección de la imagen
-	 *   						key: id  value: registro a actualizar
-	 *   
-	 *    archivo y id son requisitos de parametro
-	 * */
-	
+	 * Postman - body - form-data key: archivo value: dirección de la imagen key: id
+	 * value: registro a actualizar
+	 * 
+	 * archivo y id son requisitos de parametro
+	 */
+
 	@GetMapping("/uploads/img/{nombreFoto:.+}")
-	public ResponseEntity<Resource> verFoto(@PathVariable String nombreFoto){
-		
-		Path rutaArchivo = Paths.get("C:\\Users\\thece\\Pictures\\imagenes-proyecto").resolve(nombreFoto).toAbsolutePath();
+	public ResponseEntity<Resource> verFoto(@PathVariable String nombreFoto) {
+
+		Path rutaArchivo = Paths.get("C:\\Users\\thece\\Pictures\\imagenes-proyecto").resolve(nombreFoto)
+				.toAbsolutePath();
 		log.info(rutaArchivo.toString());
 		Resource recurso = null;
 		try {
@@ -290,17 +288,16 @@ public class ClienteRestController {
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
-		
-		//Validar la existencia del recurso
-		if(!recurso.exists() && !recurso.isReadable()) {
+
+		// Validar la existencia del recurso
+		if (!recurso.exists() && !recurso.isReadable()) {
 			throw new RuntimeErrorException(null, "Error la intentar cargar la imagen: " + nombreFoto);
 		}
-		
+
 		HttpHeaders cabecera = new HttpHeaders();
 		cabecera.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename= \"" + recurso.getFilename() + "\"");
-		
+
 		return new ResponseEntity<Resource>(recurso, cabecera, HttpStatus.OK);
 	}
-	
-	
+
 }
