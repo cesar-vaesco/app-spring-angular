@@ -18,7 +18,7 @@
                             <label class="custom-file-label" for="inputGroupFile04">Seleccionar foto</label>
                         </div>
                         <div class="input-group-append">
-                            <button (click)="subirFoto()" class="btn btn-outline-secondary" type="button">Enviar imagen</button>
+                            <button (click)="subirFoto()" [disabled]="!fotoSeleccionada" class="btn btn-outline-secondary" type="button">Enviar imagen</button>
                         </div>
                     </div>
                 </div>
