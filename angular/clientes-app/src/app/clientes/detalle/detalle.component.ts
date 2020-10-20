@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Cliente } from '../cliente';
 import { ClienteService } from '../cliente.service';
@@ -11,7 +11,14 @@ import { HttpEventType } from '@angular/common/http';
   styleUrls: ['./detalle.component.css'],
 })
 export class DetalleComponent implements OnInit {
-  cliente: Cliente;
+  
+  /*
+   *@Input() Decorador que marca un campo de clase como una propiedad de entrada y proporciona metadatos de configuración. 
+   *La propiedad de entrada está vinculada a una propiedad DOM en la plantilla.
+   *Durante la detección de cambios, Angular actualiza automáticamente la propiedad de datos con el valor de la propiedad DOM.
+   */ 
+  @Input() cliente: Cliente;
+
   titulo: string = 'Detalle del cliente';
   public fotoSeleccionada: File;
   progreso: number = 0;
@@ -22,14 +29,6 @@ export class DetalleComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.activateRoute.paramMap.subscribe((params) => {
-      let id: number = +params.get('id');
-      if (id) {
-        this.clienteService.getCliente(id).subscribe((cliente) => {
-          this.cliente = cliente;
-        });
-      }
-    });
   }
 
   seleccionarFoto(event) {
