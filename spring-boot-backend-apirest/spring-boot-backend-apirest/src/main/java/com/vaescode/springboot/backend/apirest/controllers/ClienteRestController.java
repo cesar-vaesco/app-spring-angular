@@ -43,6 +43,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.vaescode.springboot.backend.apirest.models.entity.Cliente;
 
 import com.vaescode.springboot.backend.apirest.models.service.IClienteService;
+import com.vaescode.springboot.backend.apirest.models.service.IUploadFileService;
 
 @CrossOrigin(origins = { "http://localhost:4200" })
 @RestController
@@ -53,6 +54,9 @@ public class ClienteRestController {
 
 	@Autowired
 	private IClienteService clienteService;
+	
+	@Autowired
+	private IUploadFileService uploadService;
 
 	@GetMapping("/clientes")
 	public List<Cliente> index() {
@@ -195,15 +199,8 @@ public class ClienteRestController {
 		try {
 			Cliente cliente = clienteService.findById(id);
 			String nombreFotoAnterior = cliente.getFoto();
-
-			if (nombreFotoAnterior != null && nombreFotoAnterior.length() > 0) {
-				Path rutaFotoAnterior = Paths.get("C:\\Users\\thece\\Pictures\\imagenes-proyecto")
-						.resolve(nombreFotoAnterior).toAbsolutePath();
-				File archivoFotoAnterior = rutaFotoAnterior.toFile();
-				if (archivoFotoAnterior.exists() && archivoFotoAnterior.canRead()) {
-					archivoFotoAnterior.delete();
-				}
-			}
+			
+			uploadService.eliminar(nombreFotoAnterior);
 
 			clienteService.delete(id);
 		} catch (DataAccessException e) {
@@ -226,32 +223,22 @@ public class ClienteRestController {
 
 		if (!archivo.isEmpty()) {
 
-			String nombreArchivo = UUID.randomUUID().toString() + "_" + archivo.getOriginalFilename().replace(" ", "");
-
-			Path rutaArchivo = Paths.get("C:\\Users\\thece\\Pictures\\imagenes-proyecto").resolve(nombreArchivo)
-					.toAbsolutePath();
-
-			log.info(rutaArchivo.toString());
-
+			
+			String nombreArchivo = null;
+				
 			try {
-				Files.copy(archivo.getInputStream(), rutaArchivo);
+				nombreArchivo = uploadService.copiar(archivo);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				response.put("mensaje", "Error al subor la imagen del cliente " + nombreArchivo);
+				response.put("mensaje", "Error al subor la imagen del cliente ");
 				response.put("error", e.getMessage().concat(": ").concat(e.getCause().getMessage()));
 				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 
 			String nombreFotoAnterior = cliente.getFoto();
 
-			if (nombreFotoAnterior != null && nombreFotoAnterior.length() > 0) {
-				Path rutaFotoAnterior = Paths.get("C:\\Users\\thece\\Pictures\\imagenes-proyecto")
-						.resolve(nombreFotoAnterior).toAbsolutePath();
-				File archivoFotoAnterior = rutaFotoAnterior.toFile();
-				if (archivoFotoAnterior.exists() && archivoFotoAnterior.canRead()) {
-					archivoFotoAnterior.delete();
-				}
-			}
+			uploadService.eliminar(nombreFotoAnterior);
+			
 
 			cliente.setFoto(nombreArchivo);
 
@@ -279,26 +266,14 @@ public class ClienteRestController {
 	@GetMapping("/uploads/img/{nombreFoto:.+}")
 	public ResponseEntity<Resource> verFoto(@PathVariable String nombreFoto) {
 
-		Path rutaArchivo = Paths.get("C:\\Users\\thece\\Pictures\\imagenes-proyecto").resolve(nombreFoto)
-				.toAbsolutePath();
-		log.info(rutaArchivo.toString());
+		
 		Resource recurso = null;
+		
 		try {
-			recurso = new UrlResource(rutaArchivo.toUri());
+			recurso = uploadService.cargar(nombreFoto);
 		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-
-		// Validar la existencia del recurso
-		if (!recurso.exists() && !recurso.isReadable()) {
-			rutaArchivo = Paths.get("src/main/resources/static/images").resolve("no-usuario.png")
-					.toAbsolutePath();
-			try {
-				recurso = new UrlResource(rutaArchivo.toUri());
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
-			log.error("Error la intentar cargar la imagen: " + nombreFoto);
 		}
 
 		HttpHeaders cabecera = new HttpHeaders();
