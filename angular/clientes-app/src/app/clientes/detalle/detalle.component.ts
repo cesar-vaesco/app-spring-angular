@@ -1,9 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { Cliente } from '../cliente';
 import { ClienteService } from '../cliente.service';
+import { ModalService } from './modal.service';
 import swal from 'sweetalert2';
 import { HttpEventType } from '@angular/common/http';
+
 
 @Component({
   selector: 'detalle-cliente',
@@ -25,10 +26,10 @@ export class DetalleComponent implements OnInit {
 
   constructor(
     private clienteService: ClienteService,
-    private activateRoute: ActivatedRoute
+    public modalService: ModalService
   ) {}
 
-  ngOnInit(): void {
+  ngOnInit() {
   }
 
   seleccionarFoto(event) {
@@ -66,8 +67,17 @@ export class DetalleComponent implements OnInit {
             );
           }
          // this.cliente = cliente;
-         
         });
     }
+  }
+
+  cerrarModal(){
+    this.modalService.cerrarModal();
+    this.fotoSeleccionada = null;
+    this.progreso = 0;
+    /**Se recetea la foto celeccionada y el progreso de carga */
+    console.log("Cerrar modal...");
+    
+
   }
 }
